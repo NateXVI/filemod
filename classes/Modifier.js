@@ -84,6 +84,18 @@ class Modifier {
 		return dir + '/' + name + ext;
 	}
 
+	saveState() {}
+
+	getJSON() {
+		// returns modifier saved as a JSON object
+		let a = {
+			type: this.name,
+			state: this.state,
+		};
+
+		return JSON.stringify(a);
+	}
+
 	renameFile(filePath, name) {
 		// renames file
 		name = name + this.getFileType(filePath);
@@ -92,8 +104,13 @@ class Modifier {
 
 		if (newName != filePath) {
 			try {
-				fs.renameSync(filePath, newName);
-				return newName;
+				try {
+					fs.readFileSync(newName);
+					console.log('file not renamed because file already exists with that name');
+				} catch (error) {
+					fs.renameSync(filePath, newName);
+					return newName;
+				}
 			} catch (error) {
 				console.log('could not rename file', error);
 				return filePath;
@@ -101,5 +118,14 @@ class Modifier {
 		}
 
 		return filePath;
+	}
+
+	textToRegex(s) {
+		// converts text to regex object
+		let match = s.match(new RegExp('^/(.*?)/([gimy]*)$'));
+		// sanity check here
+		var regex = new RegExp(match[1], match[2]);
+
+		return regex;
 	}
 }

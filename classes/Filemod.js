@@ -35,6 +35,7 @@ class Filemod {
 
 	renderPreview() {
 		// return html for the preview
+		this.save();
 		if (this.state.directory === '') return '';
 
 		let view = '';
@@ -67,6 +68,35 @@ class Filemod {
 		document.dispatchEvent(event);
 	}
 
+	async modify() {
+		// executes modifiers
+		if (this.state.directory === '') return;
+
+		let fileList = this.getStarting();
+
+		for (let i in this.state.modifiers) {
+			let mod = this.state.modifiers[i];
+
+			fileList = mod.modify(fileList);
+		}
+
+		this.rerenderPreview();
+	}
+
+	save() {
+		let mods = [];
+		for (let i in this.state.modifiers) {
+			mods.push(JSON.parse(this.state.modifiers[i].getJSON()));
+		}
+
+		let saveObject = {
+			directory: this.state.directory,
+			modifiers: mods,
+		};
+
+		localStorage.setItem('state-save', JSON.stringify(saveObject));
+	}
+
 	loadState(state) {
 		// loads given state
 		// doesn't change state values not given.
@@ -95,9 +125,9 @@ class Filemod {
 		// state is the desired state for the modifier being added
 
 		// lookup table for when the given modType is a string
-		const lookup = {
-			modifier: Modifier,
-		};
+		const lookup = {};
+		lookup[new Modifier().name] = Modifier;
+		lookup[new SeriesModifier().name] = SeriesModifier;
 
 		// holds the modifier class to be created
 		let c;

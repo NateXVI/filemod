@@ -131,4 +131,12 @@ div.modifier-render {
 	}
 }
 
+div.input {
+	padding: 7px 0;
+}
+p.description {
+	font-size: small;
+	color: #7c7c7c;
+}
+
 /* Add styles here to customize the appearance of your app */

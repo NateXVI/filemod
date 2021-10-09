@@ -5,11 +5,18 @@
 // selectively enable features needed in the rendering
 // process.
 
+const { session } = require('electron');
+
 const filemod = new Filemod();
 const modifiersSection = document.getElementById('modifiers');
 const previewSection = document.getElementById('previews');
 const directoryText = document.getElementById('directory');
+const modifyButton = document.getElementById('modify-button');
 
+// stores if modifications are being executed or not
+let isModifying = false;
+
+// renders modifiers
 function renderModifiers() {
 	console.log('rendering modifiers');
 	try {
@@ -19,6 +26,7 @@ function renderModifiers() {
 	}
 }
 
+// renders preview
 function renderPreview() {
 	console.log('rendering preview');
 	try {
@@ -28,8 +36,28 @@ function renderPreview() {
 	}
 }
 
+// loads previous session on startup
+function load() {
+	try {
+		let save = localStorage.getItem('state-save');
+		save = JSON.parse(save);
+		filemod.setDirectory(save.directory);
+		if (save.directory != '') directoryText.innerHTML = save.directory;
+
+		// filemod.modifiers = [];
+		for (let i in save.modifiers) {
+			filemod.addModifier(save.modifiers[i].type, save.modifiers[i].state);
+		}
+	} catch (error) {}
+}
+
+load();
+
+// add event listeners for rerender events
 document.addEventListener('render modifiers', () => renderModifiers());
 document.addEventListener('render preview', () => renderPreview());
+
+// change directory logic
 directoryText.addEventListener('click', async () => {
 	try {
 		let newDir = await filemod.getDirectoryFromUser();
@@ -40,6 +68,26 @@ directoryText.addEventListener('click', async () => {
 	}
 });
 
+// starts modifying when modify button is pressed
+modifyButton.addEventListener('click', async () => {
+	if (isModifying) return;
+
+	isModifying = true;
+	try {
+		console.log('modifying files');
+		await filemod.modify();
+		console.log('modifications successful');
+	} catch (error) {
+		console.log('modify failed', error);
+	}
+	isModifying = false;
+});
+
+// update preview every second
+window.setInterval(() => {
+	renderPreview();
+}, 1000);
+
 // TESTS TESTS TESTS TESTS TESTS TESTS
 // TESTS TESTS TESTS TESTS TESTS TESTS
 // TESTS TESTS TESTS TESTS TESTS TESTS
@@ -48,10 +96,11 @@ directoryText.addEventListener('click', async () => {
 // TESTS TESTS TESTS TESTS TESTS TESTS
 // TESTS TESTS TESTS TESTS TESTS TESTS
 
-filemod.addModifier('modifier');
-filemod.addModifier('modifier');
-filemod.addModifier('modifier');
-filemod.addModifier(Modifier);
+// filemod.addModifier(SeriesModifier);
+// filemod.addModifier('modifier');
+// filemod.addModifier('modifier');
+// filemod.addModifier('modifier');
+// filemod.addModifier(Modifier);
 
 // const testMod = new Modifier();
 // const testDir = 'C:/home/files';
