@@ -3,10 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-		<meta
-			http-equiv="Content-Security-Policy"
-			content="default-src 'self'; script-src 'self'"
-		/>
+		<meta content="script-src 'self' 'unsafe-inline';" />
 		<link href="./styles.css" rel="stylesheet" />
 		<title>Hello World!</title>
 	</head>
@@ -15,7 +12,16 @@
 		<div class="bottom">
 			<div class="modifier-section">
 				<div class="modifier-top">
-					<button class="add-button">+</button>
+					<button class="add-button" id="add-button">+</button>
+					<div class="dropdown-content" id="dropdown-content">
+						<a href="#" class="dropbtn">modifier</a>
+						<br />
+						<a href="#" class="dropbtn">seriesModifier</a>
+						<br />
+						<a href="#" class="dropbtn">moveModifier</a>
+						<br />
+						<a href="#" class="dropbtn">torrentModifier</a>
+					</div>
 					<p class="directory" id="directory">Select Directory</p>
 					<button id="modify-button">modify</button>
 				</div>
@@ -30,6 +36,8 @@
 		<!-- You can also require other files to run in this process -->
 		<script src="./libs.js"></script>
 		<script src="./classes/Modifier.js"></script>
+		<script src="./classes/TorrentModifier.js"></script>
+		<script src="./classes/MoveModifier.js"></script>
 		<script src="./classes/SeriesModifier.js"></script>
 		<script src="./classes/Filemod.js"></script>
 		<script src="./renderer.js"></script>

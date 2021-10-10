@@ -17,6 +17,40 @@ class Filemod {
 		};
 	}
 
+	removeModifier(id) {
+		console.log(id);
+
+		try {
+			const index = this.state.modifiers.findIndex((item) => {
+				return item.uuid == id;
+			});
+
+			this.state.modifiers.splice(index, 1);
+
+			console.log(index);
+		} catch (error) {}
+
+		this.rerenderModifiers();
+	}
+
+	postRender() {
+		for (let i in this.state.modifiers) {
+			this.state.modifiers[i].postRender();
+		}
+	}
+
+	getModifierById(id) {
+		return this.state.modifiers.find((item) => {
+			return item.uuid == id;
+		});
+	}
+
+	getModifierIndexById(id) {
+		return this.state.modifiers.findIndex((item) => {
+			return item.uuid == id;
+		});
+	}
+
 	renderModifiers() {
 		// returns html for the modifiers
 		let view = '';
@@ -25,8 +59,18 @@ class Filemod {
 			const mod = this.state.modifiers[i];
 
 			view += `<div class="modifier">
-			<p class="modifier-title">${mod.title}</p>
-			<div class="modifier-render">${mod.render()}</div>
+			<header class="modifier-header">
+				<p class="modifier-title">${mod.title}</p>
+				<div class="modifier-buttons">
+					<button id="remove-${mod.uuid}" class="remove-button">X</button>
+					${
+						mod.minimized
+							? `<button id="expand-${mod.uuid}" class="modifier-button">+</button>`
+							: `<button id="collapse-${mod.uuid}" class="modifier-button">--</button>`
+					}
+				</div>
+			</header>
+			<div class="${mod.minimized ? 'hidden ' : ''}modifier-render">${mod.render()}</div>
 			</div>`;
 		}
 
@@ -77,7 +121,7 @@ class Filemod {
 		for (let i in this.state.modifiers) {
 			let mod = this.state.modifiers[i];
 
-			fileList = mod.modify(fileList);
+			fileList = await mod.modify(fileList);
 		}
 
 		this.rerenderPreview();
@@ -128,6 +172,8 @@ class Filemod {
 		const lookup = {};
 		lookup[new Modifier().name] = Modifier;
 		lookup[new SeriesModifier().name] = SeriesModifier;
+		lookup[new MoveModifier().name] = MoveModifier;
+		lookup[new TorrentModifier().name] = TorrentModifier;
 
 		// holds the modifier class to be created
 		let c;
@@ -153,6 +199,8 @@ class Filemod {
 		} catch (error) {
 			console.log('could not add modifier', error);
 		}
+
+		this.rerenderModifiers();
 	}
 
 	async getDirectoryFromUser() {

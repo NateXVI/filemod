@@ -66,6 +66,9 @@ class SeriesModifier extends Modifier {
 
 	render() {
 		return `
+		<div class="input">
+			<p class="description">Takes a set of files and renames them to work with Plex</p>
+		</div>
         <div class="input">
             <label for="title">Title</label>
             <input type="text" name="title" placeholder="series title" value="${this.state.title}" id="title-${this.uuid}"/><br/>

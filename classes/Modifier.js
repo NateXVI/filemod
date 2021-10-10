@@ -1,6 +1,5 @@
 //
 //
-
 class Modifier {
 	// base modifier class
 
@@ -13,6 +12,8 @@ class Modifier {
 	constructor(params = {}) {
 		// assign uuid
 		this.uuid = this.generateUuid();
+
+		this.minimized = false;
 
 		// define defaults
 		this.state = this.defaults();
@@ -29,6 +30,8 @@ class Modifier {
 		// this is used to the constructor doesn't have to be rewritten when class is extended
 		return {};
 	}
+
+	onLoad() {}
 
 	preview(fileList) {
 		// returns a preview of what the modified file list would look like, but dosn't apply modifications
@@ -48,6 +51,17 @@ class Modifier {
 		return "<p>This modifier doesn't do anything</p>";
 	}
 
+	postRender() {}
+
+	async getDirectoryFromUser() {
+		let val = await fileDialog({ type: 'directory' });
+		return val[0];
+	}
+	async getFileFromUser() {
+		let val = await fileDialog({ type: 'open-file' });
+		return val[0];
+	}
+
 	generateUuid() {
 		// rerurns a new uuid
 
@@ -56,6 +70,20 @@ class Modifier {
 				v = c == 'x' ? r : (r & 0x3) | 0x8;
 			return v.toString(16);
 		});
+	}
+
+	rerenderModifiers() {
+		// calls rerender event
+
+		const event = new Event('render modifiers');
+		document.dispatchEvent(event);
+	}
+
+	rerenderPreview() {
+		// calls rerender event
+
+		const event = new Event('render preview');
+		document.dispatchEvent(event);
 	}
 
 	getFileName(filePath) {
@@ -118,6 +146,34 @@ class Modifier {
 		}
 
 		return filePath;
+	}
+
+	async moveFile(filePath, dir) {
+		let newPath = path.join(dir, this.getFileName(filePath));
+
+		if (newPath != filePath) {
+			try {
+				try {
+					fs.readFileSync(newPath);
+					console.log('file not moved because file already exists with that name');
+				} catch (error) {
+					move(filePath, this.getFileDir(newPath), (error) => {
+						if (error) console.log(error);
+					});
+					return newPath;
+				}
+			} catch (error) {
+				console.log('could not rename file', error);
+				return filePath;
+			}
+		}
+
+		return filePath;
+	}
+
+	moveFilePreview(filePath, dir) {
+		let newPath = path.join(dir, this.getFileName(filePath));
+		return newPath;
 	}
 
 	textToRegex(s) {

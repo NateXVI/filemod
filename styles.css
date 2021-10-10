@@ -20,11 +20,30 @@ input {
 	color: black;
 }
 
+.hidden {
+	display: none;
+}
+
 .modifier-top {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	padding: 5px;
+}
+
+.dropdown-content {
+	position: absolute;
+
+	flex-direction: column;
+	background: rgba(218, 218, 218, 1);
+	top: 45px;
+	left: 32px;
+	padding: 5px;
+}
+
+.dropbtn {
+	color: black;
+	height: 30px;
 }
 
 .add-button {
@@ -95,11 +114,55 @@ div.modifier {
 	overflow: hidden;
 }
 
+header.modifier-header {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	align-items: flex-end;
+	background: #111111;
+}
+
 p.modifier-title {
 	padding: 5px;
 	font-weight: bold;
-	width: 100%;
-	background: #111111;
+}
+
+.remove-button {
+	color: white;
+	background-color: red;
+	font-weight: bold;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: none;
+	margin: 5px;
+	margin-left: 0;
+}
+
+.remove-button:hover {
+	background-color: rgb(175, 0, 0);
+}
+
+.remove-button:active {
+	background-color: red;
+}
+
+.modifier-button {
+	color: white;
+	background-color: #172d4b;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: none;
+	margin: 5px;
+	margin-left: 0;
+}
+
+.modifier-button:hover {
+	background-color: #244572;
+}
+.modifier-button:active {
+	background-color: #172d4b;
 }
 
 div.modifier-render {
