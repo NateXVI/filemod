@@ -18,34 +18,44 @@ class Filemod {
 	}
 
 	removeModifier(id) {
-		console.log(id);
-
+		// removes modifier with specific id
 		try {
+			// try to find the modifier with matchin id
 			const index = this.state.modifiers.findIndex((item) => {
 				return item.uuid == id;
 			});
 
+			// remove the modifier
 			this.state.modifiers.splice(index, 1);
+		} catch (error) {
+			console.log('unable to remove modifier', error);
+		}
 
-			console.log(index);
-		} catch (error) {}
-
+		// rerender the modifiers to show changes
 		this.rerenderModifiers();
 	}
 
 	postRender() {
+		// calls the post render method on all the modifiers
+		// used to add document event listeners
 		for (let i in this.state.modifiers) {
 			this.state.modifiers[i].postRender();
 		}
 	}
 
 	getModifierById(id) {
-		return this.state.modifiers.find((item) => {
+		// find the index of the modifier
+		const index = this.state.modifiers.findIndex((item) => {
 			return item.uuid == id;
 		});
+
+		// if modifier doesn't exist throw an error
+		if (index < 0) throw `could not find modifier with id ${id}`;
 	}
 
 	getModifierIndexById(id) {
+		// returns index of modifier with specific id
+		// returns -1 when cannot find modifier
 		return this.state.modifiers.findIndex((item) => {
 			return item.uuid == id;
 		});
