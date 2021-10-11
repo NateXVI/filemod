@@ -122,6 +122,7 @@ class Filemod {
 			let mod = this.state.modifiers[i];
 
 			fileList = await mod.modify(fileList);
+			console.log(mod.title, fileList);
 		}
 
 		this.rerenderPreview();
@@ -174,6 +175,7 @@ class Filemod {
 		lookup[new SeriesModifier().name] = SeriesModifier;
 		lookup[new MoveModifier().name] = MoveModifier;
 		lookup[new TorrentModifier().name] = TorrentModifier;
+		lookup[new FilterExtModifier().name] = FilterExtModifier;
 
 		// holds the modifier class to be created
 		let c;
@@ -209,12 +211,21 @@ class Filemod {
 	}
 
 	getStarting() {
+		if (this.directory == '') return [];
 		// gets starting fileList
 		try {
 			let starting = fs.readdirSync(this.state.directory);
-
+			let removeList = [];
 			for (let i in starting) {
 				starting[i] = path.join(this.state.directory, starting[i]);
+				let stats = fs.statSync(starting[i]);
+				if (stats.isDirectory()) {
+					removeList.push(i);
+				}
+			}
+
+			for (let i = removeList.length - 1; i >= 0; i--) {
+				starting.splice(removeList[i], 1);
 			}
 
 			return starting;

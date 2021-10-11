@@ -124,6 +124,15 @@ class Modifier {
 		return JSON.stringify(a);
 	}
 
+	deleteFile(filePath) {
+		console.log(filePath);
+		try {
+			fs.unlinkSync(filePath);
+		} catch (error) {
+			console.log(`${filePath} could not be deleted`, error);
+		}
+	}
+
 	renameFile(filePath, name) {
 		// renames file
 		name = name + this.getFileType(filePath);

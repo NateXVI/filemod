@@ -46,7 +46,7 @@ class MoveModifier extends Modifier {
 		let newList = fileList;
 		for (let i in newList) {
 			console.log('moving file');
-			newList[i] = this.moveFile(
+			newList[i] = await this.moveFile(
 				newList[i],
 				path.join(this.state.directory, this.getFileName(fileList[i]))
 			);
