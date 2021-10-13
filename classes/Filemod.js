@@ -284,4 +284,13 @@ class Filemod {
 		let val = await fileDialog({ type: 'open-file' });
 		return val[0];
 	}
+
+	generateUuid() {
+		// rerurns a new uuid
+		return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			var r = (Math.random() * 16) | 0,
+				v = c == 'x' ? r : (r & 0x3) | 0x8;
+			return v.toString(16);
+		});
+	}
 }
