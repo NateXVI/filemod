@@ -131,6 +131,7 @@ class Filemod {
 		// calls rerender event for modifiers
 		const event = new Event('render modifiers');
 		document.dispatchEvent(event);
+		this.save();
 	}
 
 	rerenderPreview() {
@@ -179,6 +180,7 @@ class Filemod {
 		lookup[new MoveModifier().name] = MoveModifier;
 		lookup[new TorrentModifier().name] = TorrentModifier;
 		lookup[new FilterExtModifier().name] = FilterExtModifier;
+		lookup[new SeriesSeasonModifier().name] = SeriesSeasonModifier;
 
 		// holds the modifier class to be created
 		let c;
