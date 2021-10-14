@@ -9,7 +9,7 @@ class SeriesModifier extends Modifier {
 			title: '',
 			year: 2000,
 			season: 1,
-			episodRegex: '/[0-9]+/g',
+			episodeRegex: '/[0-9]+/g',
 			index: 0,
 		};
 	}
@@ -20,7 +20,7 @@ class SeriesModifier extends Modifier {
 		name = name.join('.');
 
 		try {
-			let r = this.textToRegex(this.state.episodRegex);
+			let r = this.textToRegex(this.state.episodeRegex);
 			let episode = parseInt(name.match(r)[this.state.index]);
 
 			if (isNaN(episode)) throw 'episode not found by regex';
@@ -83,7 +83,7 @@ class SeriesModifier extends Modifier {
         </div>
         <div class="input">
             <label for="episode-regex">Episode Regex</label>
-            <input type="text" value="${this.state.episodRegex}" id="regex-${this.uuid}"/>
+            <input type="text" value="${this.state.episodeRegex}" id="regex-${this.uuid}"/>
             <p class="description">This is used to find the episode from the original name of the video file.</p>
         </div>
         <div class="input">
@@ -100,7 +100,7 @@ class SeriesModifier extends Modifier {
 		this.state.title = document.getElementById(`title-${this.uuid}`).value;
 		this.state.year = document.getElementById(`year-${this.uuid}`).value;
 		this.state.season = document.getElementById(`season-${this.uuid}`).value;
-		this.state.episodRegex = document.getElementById(`regex-${this.uuid}`).value;
+		this.state.episodeRegex = document.getElementById(`regex-${this.uuid}`).value;
 		this.state.index = document.getElementById(`index-${this.uuid}`).value;
 	}
 }
