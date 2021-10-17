@@ -14,6 +14,8 @@ class Filemod {
 			...this.state,
 			...params,
 		};
+
+		this.modifying = false;
 	}
 
 	// GENERAL FUNCTIONS
@@ -32,15 +34,22 @@ class Filemod {
 
 		// don't modify files if no directory is selected
 		if (this.state.directory === '') return;
+		if (this.modifying) return console.log('skipped');
+		try {
+			this.modifying = true;
+			// get the starting file list and modify it
+			let fileList = this.getStarting();
+			for (let i in this.state.modifiers) {
+				let mod = this.state.modifiers[i];
+				this.state.modifiers[i].isActive = true;
+				fileList = await mod.modify(fileList);
+				this.state.modifiers[i].isActive = false;
+				console.log(mod.title, fileList);
 
-		// get the starting file list and modify it
-		let fileList = this.getStarting();
-		for (let i in this.state.modifiers) {
-			let mod = this.state.modifiers[i];
-			this.state.modifiers[i].isActive = true;
-			fileList = await mod.modify(fileList);
-			this.state.modifiers[i].isActive = false;
-			console.log(mod.title, fileList);
+				this.modifying = false;
+			}
+		} catch (error) {
+			this.modifying = false;
 		}
 	}
 
