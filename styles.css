@@ -59,6 +59,10 @@ body {
 	height: 30px;
 }
 
+.tab-highlight {
+	background-color: #666;
+}
+
 .tab > p {
 	color: black;
 	white-space: nowrap;
