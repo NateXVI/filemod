@@ -35,7 +35,7 @@ class SeriesSeasonModifier extends SeriesModifier {
             <p class="description">This is used to find the season from the original name of the video file.</p>
             </div>
             <div class="input">
-                <label for="index">Index</label>
+                <label for="index">Season Index</label>
                 <input type="number" min="0" value="${this.state.seasonIndex}" id="season-index-${this.uuid}" /><br/>
                 <p class="description">This is used to specify which number in the name it is. Ex: a file named "Ep26Season4.mp4" would have "26" as index 0 and "4" as index 1 (with the default regex).    
             </div>
@@ -45,7 +45,7 @@ class SeriesSeasonModifier extends SeriesModifier {
             <p class="description">This is used to find the episode from the original name of the video file.</p>
         </div>
         <div class="input">
-            <label for="index">Index</label>
+            <label for="index">Episode Index</label>
             <input type="number" min="0" value="${this.state.episodeIndex}" id="episode-index-${this.uuid}" /><br/>
             <p class="description">This is used to specify which number in the name it is. Ex: a file named "Ep26Season4.mp4" would have "26" as index 0 and "4" as index 1 (with the default regex).    
         </div>
