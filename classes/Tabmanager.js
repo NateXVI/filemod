@@ -54,6 +54,10 @@ class TabManager {
 			],
 			...params,
 		};
+
+		for (let i = 0; i < this.state.tabs; i++) {
+			this.state.tabs[i].onLoad();
+		}
 	}
 
 	modify(tabNumber = this.tab) {
