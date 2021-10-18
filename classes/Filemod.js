@@ -265,6 +265,12 @@ class Filemod {
 		this.rerenderPreview();
 	}
 
+	onLoad() {
+		for (let i = 0; i < this.state.modifiers.length; i++) {
+			this.state.modifiers[i].onLoad();
+		}
+	}
+
 	// DIRECTORY FUNCTIONS
 	// DIRECTORY FUNCTIONS
 	getDirectory() {
