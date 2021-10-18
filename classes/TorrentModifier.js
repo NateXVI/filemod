@@ -32,18 +32,19 @@ class TorrentModifier extends Modifier {
 			const client = new WebTorrent();
 			const torrentFile = fs.readFileSync(this.state.filePath);
 			const torrent = client.add(torrentFile, { path: this.state.destination });
-
+			this.rerenderModifiers();
 			return new Promise((resolve, reject) => {
 				let interval = setInterval(() => {
 					// console.log(torrent.progress, torrent.downloadSpeed, torrent.timeRemaining);
 					this.stats.eta = torrent.timeRemaining;
 					this.stats.progress = torrent.progress;
 					this.stats.speed = torrent.downloadSpeed;
-					this.rerenderModifiers();
+					this.rerender();
 					if (torrent.done) {
 						client.destroy();
 						clearInterval(interval);
 						this.stats.inProgress = false;
+						this.rerenderModifiers();
 						resolve(newList);
 					}
 
@@ -81,23 +82,35 @@ class TorrentModifier extends Modifier {
 
 	// RENDER FUNCTIONS
 	// RENDER FUNCTIONS
-	render() {
-		let text = `
+
+	rerender() {
+		try {
+			let div = document.getElementById(`torrentModifier-${this.uuid}`);
+			div.innerHTML = this.render(true);
+		} catch (error) {}
+	}
+
+	render(inner = false) {
+		let text = '';
+
+		if (!inner) text += `<div id="torrentModifier-${this.uuid}">`;
+
+		text += `
 		<div class="input">
-        <p class="description">Downloads a torrent</p>
+		<p class="description">Downloads a torrent</p>
 		</div>
-        <div class="input">
-        <p class="directory" id="filePath-${this.uuid}">${
+		<div class="input">
+		<p class="directory" id="filePath-${this.uuid}">${
 			this.state.filePath === '' ? 'Select Torrent File' : this.state.filePath
 		}</p>
-        <p class="description">torrent file path<p>
-        </div>
-        <div class="input">
-        <p class="directory" id="directory-${this.uuid}">${
+		<p class="description">torrent file path<p>
+		</div>
+		<div class="input">
+		<p class="directory" id="directory-${this.uuid}">${
 			this.state.destination === '' ? 'Select Torrent File' : this.state.destination
 		}</p>
-        <p class="description">torrent download destination<p>
-        </div>
+		<p class="description">torrent download destination<p>
+		</div>
         `;
 
 		// render file names if any
@@ -135,6 +148,8 @@ class TorrentModifier extends Modifier {
 			</div>
 			`;
 		}
+
+		if (!inner) text += `</div>`;
 
 		return text;
 	}
