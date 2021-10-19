@@ -14,6 +14,8 @@ class Filemod {
 			...this.state,
 			...params,
 		};
+
+		this.modifying = false;
 	}
 
 	// GENERAL FUNCTIONS
@@ -32,15 +34,22 @@ class Filemod {
 
 		// don't modify files if no directory is selected
 		if (this.state.directory === '') return;
+		if (this.modifying) return console.log('skipped');
+		try {
+			this.modifying = true;
+			// get the starting file list and modify it
+			let fileList = this.getStarting();
+			for (let i in this.state.modifiers) {
+				let mod = this.state.modifiers[i];
+				this.state.modifiers[i].isActive = true;
+				fileList = await mod.modify(fileList);
+				this.state.modifiers[i].isActive = false;
+				console.log(mod.title, fileList);
 
-		// get the starting file list and modify it
-		let fileList = this.getStarting();
-		for (let i in this.state.modifiers) {
-			let mod = this.state.modifiers[i];
-			this.state.modifiers[i].isActive = true;
-			fileList = await mod.modify(fileList);
-			this.state.modifiers[i].isActive = false;
-			console.log(mod.title, fileList);
+				this.modifying = false;
+			}
+		} catch (error) {
+			this.modifying = false;
 		}
 	}
 
@@ -230,7 +239,7 @@ class Filemod {
 
 	// SAVING/LOADING FUNCTIONS
 	// SAVING/LOADING FUNCTIONS
-	save() {
+	getJSON() {
 		// add all the modifiers to the mods array
 		let mods = [];
 		for (let i in this.state.modifiers) {
@@ -242,7 +251,7 @@ class Filemod {
 			directory: this.state.directory,
 			modifiers: mods,
 		};
-		localStorage.setItem('state-save', JSON.stringify(saveObject));
+		return JSON.stringify(saveObject);
 	}
 
 	loadState(state) {
@@ -256,6 +265,12 @@ class Filemod {
 
 		this.rerenderModifiers();
 		this.rerenderPreview();
+	}
+
+	onLoad() {
+		for (let i = 0; i < this.state.modifiers.length; i++) {
+			this.state.modifiers[i].onLoad();
+		}
 	}
 
 	// DIRECTORY FUNCTIONS
@@ -285,5 +300,14 @@ class Filemod {
 		// tested on MacOS but it did not work
 		let val = await fileDialog({ type: 'open-file' });
 		return val[0];
+	}
+
+	generateUuid() {
+		// rerurns a new uuid
+		return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			var r = (Math.random() * 16) | 0,
+				v = c == 'x' ? r : (r & 0x3) | 0x8;
+			return v.toString(16);
+		});
 	}
 }
