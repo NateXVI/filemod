@@ -231,6 +231,10 @@ class TabManager {
 			this.renderAll();
 		} catch (error) {
 			console.log('problem with loading save', error);
+			if (this.state.tabs.length < 1) {
+				this.state.tabs.push(new Filemod());
+				this.switchTab(0);
+			}
 		}
 	}
 }
