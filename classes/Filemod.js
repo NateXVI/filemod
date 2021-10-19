@@ -140,7 +140,6 @@ class Filemod {
 		// calls rerender event for modifiers
 		const event = new Event('render modifiers');
 		document.dispatchEvent(event);
-		this.save();
 	}
 
 	rerenderPreview() {
