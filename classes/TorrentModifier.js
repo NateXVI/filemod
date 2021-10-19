@@ -236,11 +236,9 @@ class TorrentModifier extends Modifier {
 				path: this.state.destination,
 			});
 			const torrent = await client.add(torrentString, { path: this.state.destination });
-			console.log('this is the torrent', torrent);
 			this.state.files = torrent.files.map((v) =>
 				path.join(this.state.destination, v.path)
 			);
-			console.log(this.state.files);
 			client.destroy();
 		} catch (error) {}
 
