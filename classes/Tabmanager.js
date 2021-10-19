@@ -47,11 +47,7 @@ class TabManager {
 		this.tab = 0;
 
 		this.state = {
-			tabs: [
-				new Filemod({ modifiers: [new SeriesModifier()] }),
-				new Filemod({ modifiers: [new SeriesModifier()] }),
-				new Filemod({ modifiers: [new SeriesModifier()] }),
-			],
+			tabs: [],
 			...params,
 		};
 
@@ -159,9 +155,8 @@ class TabManager {
 
 		this.tab = Math.min(Math.max(this.tab, 0), this.state.tabs.length - 1);
 
-		this.renderTabs();
-		this.renderModifiers();
-		this.renderPreview();
+		this.renderAll();
+		this.save();
 	}
 
 	newTab() {
@@ -169,14 +164,18 @@ class TabManager {
 		this.tab = this.state.tabs.length - 1;
 
 		this.renderAll();
+		this.save();
 	}
 
 	switchTab(tabNumber) {
 		if (!this.state.tabs[tabNumber]) return;
 
 		this.tab = tabNumber;
-		this.renderTabs();
-		this.renderModifiers();
+
+		let dir = this.state.tabs[this.tab].state.directory;
+		this.directoryText.innerHTML = dir == '' ? 'Select Directory' : dir;
+
+		this.renderAll();
 	}
 
 	async getDirectoryFromUser() {
@@ -186,5 +185,52 @@ class TabManager {
 		console.log('getting directory');
 		let val = await fileDialog({ type: 'directory' });
 		return val[0];
+	}
+
+	save() {
+		console.log('saving tabs');
+		let tabs = [];
+		for (let i in this.state.tabs) {
+			tabs.push(JSON.parse(this.state.tabs[i].getJSON()));
+		}
+
+		let state = {
+			tabs,
+		};
+
+		localStorage.setItem('tabs', JSON.stringify(state));
+	}
+
+	load() {
+		try {
+			let tabs = JSON.parse(localStorage.getItem('tabs')).tabs;
+
+			for (let i in tabs) {
+				let fm = tabs[i];
+				let directory = fm.directory;
+				let mods = fm.modifiers;
+
+				this.state.tabs[i] = new Filemod({ directory });
+				for (let j in mods) {
+					let modType = mods[j].type;
+					let modState = mods[j].state;
+
+					this.state.tabs[i].addModifier(modType, modState);
+				}
+
+				this.state.tabs[i].onLoad();
+			}
+
+			if (this.state.tabs.length < 1) {
+				this.state.tabs.push(new Filemod());
+				this.tab = 0;
+			}
+
+			let dir = this.state.tabs[this.tab].state.directory;
+			if (dir != '') this.directoryText.innerHTML = dir;
+			this.renderAll();
+		} catch (error) {
+			console.log('problem with loading save', error);
+		}
 	}
 }
