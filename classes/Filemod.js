@@ -237,7 +237,7 @@ class Filemod {
 
 	// SAVING/LOADING FUNCTIONS
 	// SAVING/LOADING FUNCTIONS
-	save() {
+	getJSON() {
 		// add all the modifiers to the mods array
 		let mods = [];
 		for (let i in this.state.modifiers) {
@@ -249,7 +249,7 @@ class Filemod {
 			directory: this.state.directory,
 			modifiers: mods,
 		};
-		localStorage.setItem('state-save', JSON.stringify(saveObject));
+		return JSON.stringify(saveObject);
 	}
 
 	loadState(state) {
