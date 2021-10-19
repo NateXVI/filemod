@@ -161,7 +161,7 @@ class TabManager {
 
 	newTab() {
 		this.state.tabs.push(new Filemod());
-		this.tab = this.state.tabs.length - 1;
+		this.switchTab(this.state.tabs.length - 1);
 
 		this.renderAll();
 		this.save();
