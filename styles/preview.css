@@ -1,0 +1,30 @@
+.preview-title {
+	font-weight: bold;
+	margin-bottom: 20px;
+	font-size: larger;
+}
+
+.preview-section {
+	max-width: 100%;
+	height: 100vh;
+	overflow: auto;
+	padding: 20px;
+	background-color: #080d14;
+	border-radius: 10px 0 0 10px;
+}
+
+.nowrap {
+	word-wrap: none;
+	word-break: none;
+	line-break: none;
+	white-space: nowrap;
+}
+
+@media only screen and (max-width: 749px) {
+	.bottom {
+		display: block;
+	}
+	.preview-section {
+		display: none;
+	}
+}
