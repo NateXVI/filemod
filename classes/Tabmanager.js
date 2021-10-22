@@ -123,6 +123,14 @@ class TabManager {
 						this.state.tabs[tabNumber].state.modifiers[index].minimized = false;
 					}
 
+					if (type === 'up') {
+						this.state.tabs[tabNumber].moveModifierUp(id);
+					}
+
+					if (type === 'down') {
+						this.state.tabs[tabNumber].moveModifierDown(id);
+					}
+
 					this.renderModifiers(tabNumber);
 				});
 			}

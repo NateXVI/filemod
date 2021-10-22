@@ -102,6 +102,8 @@ class Filemod {
 							? `<button id="expand-${mod.uuid}" class="modifier-button">+</button>`
 							: `<button id="collapse-${mod.uuid}" class="modifier-button">--</button>`
 					}
+					<button id="up-${mod.uuid}" class="modifier-button">▲</button>
+					<button id="down-${mod.uuid}" class="modifier-button">▼</button>
 				</div>
 			</header>
 			<div class="${mod.minimized ? 'hidden ' : ''}modifier-render">${mod.render()}</div>
@@ -234,6 +236,40 @@ class Filemod {
 		return this.state.modifiers.findIndex((item) => {
 			return item.uuid == id;
 		});
+	}
+
+	moveModifierUp(id) {
+		// get mod index and mod object
+		let modIndex = this.getModifierIndexById(id);
+		let mod = this.state.modifiers[modIndex];
+
+		// return if mod is already at the start of the array
+		if (modIndex <= 0) return;
+
+		// get the mod above index and object
+		let otherIndex = modIndex - 1;
+		let otherMod = this.state.modifiers[otherIndex];
+
+		// swap their positions
+		this.state.modifiers[otherIndex] = mod;
+		this.state.modifiers[modIndex] = otherMod;
+	}
+
+	moveModifierDown(id) {
+		// get mod index and mod object
+		let modIndex = this.getModifierIndexById(id);
+		let mod = this.state.modifiers[modIndex];
+
+		// return if mod is already at the end of the array
+		if (modIndex >= this.state.modifiers.length - 1) return;
+
+		// get the mod below index and object
+		let otherIndex = modIndex + 1;
+		let otherMod = this.state.modifiers[otherIndex];
+
+		// swap their positions
+		this.state.modifiers[otherIndex] = mod;
+		this.state.modifiers[modIndex] = otherMod;
 	}
 
 	// SAVING/LOADING FUNCTIONS
