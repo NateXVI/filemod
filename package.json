@@ -1,28 +1,23 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
-  "main": "main.js",
+  "name": "filemod",
+  "private": true,
+  "version": "0.0.0",
   "scripts": {
-    "start": "electron ."
-  },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
-  "devDependencies": {
-    "electron": "^15.3.0",
-    "electron-reloader": "^1.2.1"
+    "dev": "next dev -p 1420",
+    "build": "next build && next export -o dist",
+    "tauri": "tauri"
   },
   "dependencies": {
-    "mv": "^2.1.1",
-    "node-file-dialog": "^1.0.3",
-    "webtorrent": "^1.5.6"
+    "@tauri-apps/api": "^1.0.2",
+    "next": "^12.2.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1.0.5",
+    "@types/node": "^18.7.11",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "typescript": "^4.7.4"
   }
 }

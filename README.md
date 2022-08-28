@@ -1,3 +1,7 @@
-# filemod
+# Tauri + Next.js + Typescript
 
-Work in progress app that is used for quickly and easily modifying lots of files at once. It features a GUI and a preview of what the file paths are going to look like once you press that modify button.
+This template should help get you started developing with Tauri, Next.js and Typescript.
+
+## Recommended IDE Setup
+
+- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
