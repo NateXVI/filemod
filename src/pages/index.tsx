@@ -1,15 +1,41 @@
+import { useLocalStorage } from '@mantine/hooks';
+import ModifierTabs from 'components/ModifierTabs';
 import { useState } from 'react';
-import { invoke } from '@tauri-apps/api/tauri';
+import { ModifierComponent, ModifierTab } from 'types/ModifierTypes';
 
-function App() {
-	const [greetMsg, setGreetMsg] = useState('');
-	const [name, setName] = useState('');
+export default function Main() {
+	const [tabs, setTabs] = useLocalStorage<ModifierTab[]>({
+		key: 'tabs',
+		defaultValue: [],
+	});
+	const [selectedTab, setSelectedTab] = useState<number>(0);
+	if (selectedTab > tabs.length - 1 && tabs.length > 0) setSelectedTab(0);
 
-	async function greet() {
-		setGreetMsg(await invoke('greet', { name }));
-	}
+	const addTab = () => {
+		setTabs([...tabs, { modifiers: [], name: `Tab ${tabs.length + 1}` }]);
+	};
+	const deleteTab = (i: number) => {
+		tabs.splice(i, 1);
+		setTabs([...tabs]);
+	};
 
-	return <div className="w-screen h-screen bg-gray-600"></div>;
+	return (
+		<div>
+			<header className="w-screen h-9">
+				<div>
+					<ModifierTabs
+						tabs={tabs}
+						selectedIndex={selectedTab}
+						setSelectedIndex={setSelectedTab}
+						addTab={addTab}
+						deleteTab={deleteTab}
+					/>
+				</div>
+			</header>
+			<main>
+				<div></div>
+				<div></div>
+			</main>
+		</div>
+	);
 }
-
-export default App;
