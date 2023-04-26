@@ -1,28 +1,17 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
-  "main": "main.js",
+  "private": true,
   "scripts": {
-    "start": "electron ."
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^15.3.0",
-    "electron-reloader": "^1.2.1"
+    "eslint": "^7.32.0",
+    "eslint-config-custom": "workspace:*",
+    "prettier": "^2.5.1",
+    "turbo": "latest"
   },
-  "dependencies": {
-    "mv": "^2.1.1",
-    "node-file-dialog": "^1.0.3",
-    "webtorrent": "^1.5.6"
-  }
+  "packageManager": "pnpm@7.15.0",
+  "name": "filemod"
 }
