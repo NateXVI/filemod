@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import eslint from "vite-plugin-eslint";
+import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
@@ -24,5 +25,8 @@ export default defineConfig(async () => ({
     minify: !process.env.TAURI_DEBUG ? "esbuild" : false,
     // produce sourcemaps for debug builds
     sourcemap: !!process.env.TAURI_DEBUG,
+  },
+  resolve: {
+    alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
   },
 }));
