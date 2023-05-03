@@ -1,3 +1,4 @@
+mod actions;
 mod pipeline;
 use tauri_plugin_window_state;
 
