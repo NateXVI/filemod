@@ -1,11 +1,11 @@
 use anyhow::Result;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fs::read_dir;
 use walkdir::WalkDir;
 
 use super::{Extras, Files, RunAction};
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Load {
     pub path: String,
     pub recursive: bool,
