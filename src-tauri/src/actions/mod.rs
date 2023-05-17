@@ -1,16 +1,16 @@
+pub mod load;
+
 use anyhow::Result;
 use enum_dispatch::enum_dispatch;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{collections::HashSet, path::PathBuf};
-
-pub mod load;
 
 pub type File = PathBuf;
 pub type Files = HashSet<File>;
 
 #[enum_dispatch]
-#[derive(Debug, Deserialize, PartialEq)]
-#[serde(tag = "type", rename_all = "camelCase")]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[serde(tag = "action", content = "params", rename_all = "camelCase")]
 pub enum Action {
     Load(load::Load),
 }
@@ -22,49 +22,10 @@ pub trait RunAction {
 }
 
 // extras are only used for tauri actions
+#[derive(Clone)]
 pub struct Extras {
-    window: tauri::Window,
-}
-
-pub struct Pipeline {
-    pub actions: Vec<Action>,
-}
-
-impl Pipeline {
-    pub fn run(&self) -> Result<Files> {
-        let mut files = Files::new();
-        for action in &self.actions {
-            files = action.run(files, None)?;
-        }
-        Ok(files)
-    }
-    pub fn preview(&self, files: Files) -> Result<Files> {
-        let mut files = files;
-        for action in &self.actions {
-            files = action.preview(files)?;
-        }
-        Ok(files)
-    }
-}
-
-#[test]
-fn test_pipeline() {
-    let pipeline = Pipeline {
-        actions: vec![Action::Load(load::Load {
-            path: "./test-files/load".into(),
-            recursive: false,
-        })],
-    };
-
-    let files = pipeline.run().unwrap();
-    println!("{:?}", files);
-    assert_eq!(
-        files,
-        vec!["./test-files/load/file1.txt", "./test-files/load/file2.txt"]
-            .into_iter()
-            .map(|f| f.into())
-            .collect()
-    )
+    pub id: String,
+    pub window: tauri::Window,
 }
 
 #[test]
@@ -73,9 +34,11 @@ fn test_deserialize_actions() {
         r#"
         [
             {
-                "type": "load",
-                "path": "./test-files/load",
-                "recursive": false
+                "action": "load",
+                "params": {
+                    "path": "./test-files/load",
+                    "recursive": false
+                }
             }
         ]
         "#,

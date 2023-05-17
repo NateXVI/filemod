@@ -1,53 +1,74 @@
+use crate::actions::{Action, Extras, Files, RunAction};
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Pipeline {
-    actions: Vec<Action>,
+    pub id: String,
+    pub actions: Vec<Action>,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
-#[serde(tag = "action", content = "params", rename_all = "camelCase")]
-pub enum Action {
-    Load { path: String, recursive: bool },
-    Filter { extension: String },
-    Move { destination: String },
+impl Pipeline {
+    pub fn run(&self, extras: Option<Extras>) -> Result<Files> {
+        let mut files = Files::new();
+        for action in &self.actions {
+            files = action.run(files, extras.clone())?;
+        }
+        Ok(files)
+    }
+    pub fn preview(&self, files: Files) -> Result<Files> {
+        let mut files = files;
+        for action in &self.actions {
+            files = action.preview(files)?;
+        }
+        Ok(files)
+    }
+}
+
+#[test]
+fn test_pipeline() {
+    use crate::actions::load::Load;
+    use std::path::PathBuf;
+    let pipeline = Pipeline {
+        id: "1234".to_string(),
+        actions: vec![Action::Load(Load {
+            path: "./test-files/load".into(),
+            recursive: false,
+        })],
+    };
+
+    let files = pipeline.run(None).unwrap();
+
+    let expected_files = vec!["./test-files/load/file1.txt", "./test-files/load/file2.txt"]
+        .into_iter()
+        .map(PathBuf::from)
+        .collect::<Files>();
+
+    assert_eq!(files, expected_files);
 }
 
 #[test]
 fn test_deserialize_pipeline() {
+    use crate::actions::load::Load;
     use serde_json::from_str;
     let json_str = r#"
         { 
+            "id": "1234",
             "actions": [
                 {
                     "action": "load",
                     "params": { "path": "/path/to/file.txt", "recursive": true }
-                },
-                {
-                    "action": "filter",
-                    "params": { "extension": ".txt" }
-                },
-                {
-                    "action": "move",
-                    "params": { "destination": "/path/to/new/file.txt" }
                 }
             ]
         }
     "#;
 
     let expected_pipeline = Pipeline {
-        actions: vec![
-            Action::Load {
-                path: "/path/to/file.txt".to_string(),
-                recursive: true,
-            },
-            Action::Filter {
-                extension: ".txt".to_string(),
-            },
-            Action::Move {
-                destination: "/path/to/new/file.txt".to_string(),
-            },
-        ],
+        id: "1234".to_string(),
+        actions: vec![Action::Load(Load {
+            path: "/path/to/file.txt".to_string(),
+            recursive: true,
+        })],
     };
 
     // Deserialize the JSON string into a Pipeline struct
